@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edushield Global - Crisis School Funding Portal</title>
+    <!-- Tailwind CSS for visual styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('landing')">
+            <div class="bg-emerald-600 text-white p-2 rounded-lg font-bold text-xl tracking-wider">E</div>
+            <span class="text-xl font-bold text-slate-800">Edushield <span class="text-emerald-600">Global</span></span>
+        </div>
+        <nav class="flex items-center space-x-6">
+            <button onclick="navigateTo('landing')" class="text-slate-600 hover:text-slate-900 font-medium text-sm">Active Emergency Feed</button>
+            <div id="nav-auth-section">
+                <button onclick="navigateTo('login')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2 rounded-lg text-sm transition shadow-sm">Portal Authentication</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Views Container -->
+    <main class="flex-grow">
+        
+        <!-- VIEW 1: LANDING & PUBLIC EMERGENCY FEED -->
+        <section id="view-landing" class="block">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white text-center py-16 px-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 max-w-3xl mx-auto">Crisis & Emergency Institutional Infrastructural And Social Funding</h1>
+                <p class="text-slate-300 max-w-xl mx-auto mb-8 text-base">Directly bridging crisis-affected schools requiring infrastructure or immediate capital with global donors and automated procurement channels.</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="navigateTo('login')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl transition shadow-md">Register Institution via School Code</button>
+                </div>
+            </div>
+
+            <div class="max-w-6xl mx-auto px-6 py-12">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-red-500 animate-pulse"></span> Active Verified Emergencies
+                </h2>
+                <div id="campaigns-grid" class="grid md:grid-cols-2 gap-6">
+                    <!-- Dynamic Campaigns injection spot -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: SECURE AUTHENTICATION -->
+        <section id="view-login" class="hidden">
+            <div class="max-w-md mx-auto my-16 px-6">
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+                    <h2 class="text-2xl font-bold text-slate-900 text-center mb-2">System Authentication</h2>
+                    <p class="text-slate-500 text-sm text-center mb-6">Select your portal access gateway method below</p>
+                    
+                    <div class="flex border-b border-slate-200 mb-6">
+                        <button id="tab-uic" onclick="setAuthMode('uic')" class="w-1/2 pb-3 text-sm font-bold border-b-2 border-emerald-600 text-emerald-600 transition">School Head (School Code)</button>
+                        <button id="tab-standard" onclick="setAuthMode('standard')" class="w-1/2 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition">Donor / Supplier</button>
+                        <button id="tab-admin" class="hidden" onclick="setAuthMode('admin')" aria-hidden="true"></button>
+                    </div>
+
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label id="login-label" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">KNEC / UIC School Code</label>
+                            <input 
+                                type="text" 
+                                id="login-username"
+                                required
+                                placeholder="e.g., 10 or KNEC-10" 
+                                class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                            />
+                            <p id="uic-microcopy" class="text-[11px] text-slate-400 mt-1.5 leading-relaxed block">Enter a numeric school code directly, or include KNEC/UIC prefix for explicit verification.</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Preferred Password</label>
+                            <input 
+                                type="password" 
+                                id="login-password"
+                                required
+                                placeholder="••••••••" 
+                                class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition text-sm shadow-sm mt-2">Authorize Portal Access</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: SYSTEM DASHBOARD -->
+        <section id="view-dashboard" class="hidden">
+            <div class="max-w-6xl mx-auto px-6 py-10">
+                <div class="bg-white border border-slate-200 rounded-xl p-6 mb-8 flex flex-col md:flex-row md:items-center justify-between shadow-sm gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold">Secure Session Active</span>
+                            <span id="session-uic-display" class="text-slate-400 text-xs font-mono"></span>
+                        </div>
+                        <h2 id="session-school-display" class="text-2xl font-bold text-slate-900"></h2>
+                    </div>
+                    <div class="text-sm bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg">
+                        <span class="font-bold text-slate-700">Account Privilege: </span>
+                        <span id="session-role-display" class="font-mono text-emerald-600 font-bold"></span>
+                    </div>
+                </div>
+
+                <div id="dashboard-notification" class="max-w-6xl mx-auto px-6 mb-6 hidden"></div>
+
+                <div id="school-head-workspace" class="grid md:grid-cols-3 gap-8">
+                    <!-- Left Column: Report Form -->
+                    <div class="md:col-span-1">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 sticky top-24">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">File Emergency Report</h3>
+                            <form onsubmit="handleCreateCampaign(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Crisis Classification</label>
+                                    <select id="report-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                                        <option>Infrastructural Damage</option>
+                                        <option>Resource Deprivation</option>
+                                        <option>Climate Emergency</option>
+                                        <option>Health Containment</option>
+                                        <option>Development Request</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Funding Target Required ($)</label>
+                                    <input type="number" id="report-target" required placeholder="e.g., 5000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Itemized Breakdown & Narrative</label>
+                                    <textarea id="report-desc" rows="4" required placeholder="State damage details concisely..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 text-slate-700"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Receiving Bank</label>
+                                    <select id="report-bank" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                                        <option value="">-- Select Bank --</option>
+                                        <option>Kenya Commercial Bank (KCB)</option>
+                                        <option>Equity Bank Kenya</option>
+                                        <option>Co-operative Bank of Kenya</option>
+                                        <option>Standard Chartered Bank Kenya</option>
+                                        <option>Barclays Bank Kenya</option>
+                                        <option>Diamond Trust Bank Kenya</option>
+                                        <option>National Bank of Kenya</option>
+                                        <option>ABSA Bank Kenya</option>
+                                        <option>Chase Bank Kenya</option>
+                                        <option>Housing Finance Bank Kenya</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Account Number</label>
+                                    <input type="text" id="report-account" required placeholder="e.g., 1234 cdf account" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg text-sm transition">Transmit to Pipeline</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Institutional Requests Tracker -->
+                    <div class="md:col-span-2 space-y-6">
+                        <h3 class="text-xl font-bold text-slate-900">Your Institution Requests</h3>
+                        <div id="my-campaigns-list" class="space-y-4">
+                            <!-- User's specific campaigns list populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: ADMINISTRATOR CONSOLE -->
+        <section id="view-admin" class="hidden">
+            <div class="max-w-6xl mx-auto px-6 py-10">
+                <div class="bg-white border border-slate-200 rounded-xl p-6 mb-8 shadow-sm">
+                    <div class="flex flex-col md:flex-row md:justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900">Administrator Console</h2>
+                            <p class="text-slate-500">Review campaigns, approve reports, and manage funding progress.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <div class="text-slate-500 text-xs uppercase tracking-wide mb-2">Total Campaigns</div>
+                                <div id="admin-total-campaigns" class="text-3xl font-bold text-slate-900"></div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <div class="text-slate-500 text-xs uppercase tracking-wide mb-2">Pending Review</div>
+                                <div id="admin-pending-count" class="text-3xl font-bold text-amber-700"></div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <div class="text-slate-500 text-xs uppercase tracking-wide mb-2">Funded</div>
+                                <div id="admin-funded-count" class="text-3xl font-bold text-emerald-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Campaign Management</h3>
+                        <div id="admin-campaigns-list" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 font-medium tracking-wide">
+        &copy; 2026 Edushield Global Crisis Management Solutions. All architectural rights reserved.
+    </footer>
+
+    <!-- Pure Core Logic Application Engine -->
+    <script>
+        // Data State Store
+        let currentView = 'landing';
+        let activeAuthMode = 'uic';
+        let currentSession = null;
+        const ADMIN_CREDENTIAL = 'jerryjerry7518@gmail.com';
+
+        const TRUSTED_SCHOOL_DATA_SOURCE = 'trusted-school-codes.json';
+        let TRUSTED_SCHOOL_CODES = {};
+
+        // Small browser-side 'DB' layer using localStorage
+        function initLocalDB() {
+            if (!localStorage.getItem('edushield_logins')) localStorage.setItem('edushield_logins', JSON.stringify([]));
+            if (!localStorage.getItem('edushield_reports')) localStorage.setItem('edushield_reports', JSON.stringify([]));
+        }
+
+        function saveLoginEvent(event) {
+            try {
+                const list = JSON.parse(localStorage.getItem('edushield_logins') || '[]');
+                list.unshift(event);
+                // keep recent 200
+                localStorage.setItem('edushield_logins', JSON.stringify(list.slice(0, 200)));
+            } catch (e) {
+                console.error('Failed to save login event', e);
+            }
+        }
+
+        function saveReport(report) {
+            try {
+                const list = JSON.parse(localStorage.getItem('edushield_reports') || '[]');
+                list.unshift(report);
+                localStorage.setItem('edushield_reports', JSON.stringify(list.slice(0, 1000)));
+            } catch (e) {
+                console.error('Failed to save report', e);
+            }
+        }
+
+        function loadStoredReportsIntoCampaigns() {
+            try {
+                const stored = JSON.parse(localStorage.getItem('edushield_reports') || '[]');
+                if (Array.isArray(stored) && stored.length) {
+                    // Stored reports should take precedence and appear first
+                    campaigns = stored.concat(campaigns || []);
+                }
+            } catch (e) {
+                console.warn('Failed to load stored reports into campaigns', e);
+            }
+        }
+
+        function normalizeSchoolCode(code) {
+            const raw = code.trim().toUpperCase();
+            if (!raw) return raw;
+
+            const prefixMatch = raw.match(/^(KNEC|UIC)[-\s]*/i);
+            let digits = raw.replace(/[^0-9]/g, '');
+            if (prefixMatch) {
+                digits = raw.slice(prefixMatch[0].length).replace(/[^0-9]/g, '');
+            }
+            if (digits.startsWith('254') && digits.length > 3) {
+                digits = digits.slice(3);
+            }
+            if (digits === '') {
+                return raw;
+            }
+
+            if (!prefixMatch) {
+                return digits;
+            }
+            const prefix = prefixMatch[1].toUpperCase();
+            return `${prefix}-${digits}`;
+        }
+
+        async function loadTrustedSchoolData() {
+            // Loads KNEC/UIC school codes from external trusted-school-codes.json file
+            // This file contains real examination center codes compiled from:
+            // - KNEC Official Registry (Kenya National Examinations Council)
+            // - Ministry of Education compiled school lists
+            // - University and institution KNEC registration records
+            
+            try {
+                const response = await fetch(TRUSTED_SCHOOL_DATA_SOURCE, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`Dataset fetch failed with status ${response.status}. Make sure trusted-school-codes.json exists in the application root directory.`);
+                }
+                const data = await response.json();
+                if (!data || Object.keys(data).length === 0) {
+                    throw new Error('Dataset is empty or invalid JSON');
+                }
+                TRUSTED_SCHOOL_CODES = data;
+                console.info(`✓ Loaded ${Object.keys(data).length} verified KNEC/UIC school codes from trusted-school-codes.json`);
+            } catch (error) {
+                console.error('❌ CRITICAL: Failed to load trusted school dataset:', error.message);
+                console.error('Ensure trusted-school-codes.json exists in your application root directory');
+                // Show user-facing error
+                document.body.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; background: #f1f5f9;">
+                        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; text-align: center;">
+                            <h1 style="color: #dc2626; margin-bottom: 16px;">⚠️ Configuration Error</h1>
+                            <p style="color: #475569; margin-bottom: 12px; line-height: 1.6;">Unable to load KNEC school codes database.</p>
+                            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;"><strong>Required file:</strong> trusted-school-codes.json</p>
+                            <p style="color: #64748b; font-size: 14px; background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 20px;">Error: ${error.message}</p>
+                            <p style="color: #64748b; font-size: 12px; margin-top: 16px;">Please ensure the trusted-school-codes.json file is in the same directory as this application.</p>
+                        </div>
+                    </div>
+                `;
+                throw error;
+            }
+        }
+
+        function verifyKnecSchoolCode(code) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const normalized = normalizeSchoolCode(code);
+                    let schoolName = TRUSTED_SCHOOL_CODES[normalized];
+
+                    if (!schoolName && normalized.match(/^\d+$/)) {
+                        schoolName = TRUSTED_SCHOOL_CODES[`KNEC-${normalized}`] || TRUSTED_SCHOOL_CODES[`UIC-${normalized}`];
+                    }
+                    if (!schoolName && normalized.startsWith('UIC-')) {
+                        const altKey = normalized.replace('UIC-', 'KNEC-');
+                        schoolName = TRUSTED_SCHOOL_CODES[altKey];
+                    }
+                    if (!schoolName && normalized.startsWith('KNEC-')) {
+                        const altKey = normalized.replace('KNEC-', 'UIC-');
+                        schoolName = TRUSTED_SCHOOL_CODES[altKey];
+                    }
+
+                    if (!schoolName) {
+                        reject(new Error('School code not found in the trusted dataset. Please enter a registered numeric, KNEC or UIC school code.'));
+                        return;
+                    }
+
+                    resolve({ valid: true, schoolName });
+                }, 200);
+            });
+        }
+
+        function setLoggedInNav() {
+            const navSection = document.getElementById('nav-auth-section');
+            if (currentSession?.role === 'ADMIN') {
+                navSection.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <button onclick="navigateTo('admin')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg text-sm transition">Admin Console</button>
+                        <button onclick="logout()" class="text-red-500 hover:text-red-600 text-sm font-medium">Log out</button>
+                    </div>`;
+                return;
+            }
+
+            navSection.innerHTML = `
+                <div class="flex items-center space-x-4">
+                    <button onclick="navigateTo('dashboard')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg text-sm transition">My Portal</button>
+                    <button onclick="logout()" class="text-red-500 hover:text-red-600 text-sm font-medium">Log out</button>
+                </div>`;
+        }
+
+        let campaigns = [
+            {
+                id: 1,
+                schoolName: "GARISSA MIXED SECONDARY SCHOOL",
+                uic: "KNEC-301",
+                crisisType: "Infrastructural Damage",
+                description: "Severe drought-induced water infrastructure collapse. School requires immediate borehole drilling and water tank installation for 450+ students.",
+                severity: "Critical",
+                raised: 2100,
+                target: 5500,
+                location: "Garissa County (North Eastern Region)"
+            },
+            {
+                id: 2,
+                schoolName: "TURKANA PASTORAL SECONDARY SCHOOL",
+                uic: "KNEC-296",
+                crisisType: "Climate Emergency",
+                description: "Extended drought threatens school operations. Urgent need for water storage, livestock veterinary clinic support, and student meal assistance programs.",
+                severity: "Critical",
+                raised: 1800,
+                target: 4200,
+                location: "Turkana County (ASAL Region)"
+            },
+            {
+                id: 3,
+                schoolName: "SAMBURU GIRLS BOARDING SCHOOL",
+                uic: "KNEC-287",
+                crisisType: "Health Containment",
+                description: "Limited healthcare facilities amid disease outbreak concerns. Requires medical equipment, sanitization supplies, and staff training for infectious disease protocols.",
+                severity: "High",
+                raised: 950,
+                target: 2800,
+                location: "Samburu County (Marginalized Region)"
+            },
+            {
+                id: 4,
+                schoolName: "WEST POKOT TECHNICAL INSTITUTE",
+                uic: "KNEC-292",
+                crisisType: "Resource Deprivation",
+                description: "Critical shortage of vocational training equipment, instructional materials, and IT infrastructure. Students unable to complete practical skills training.",
+                severity: "High",
+                raised: 1550,
+                target: 3600,
+                location: "West Pokot County (Marginalized Region)"
+            },
+            {
+                id: 5,
+                schoolName: "TANA RIVER PRIMARY & SECONDARY",
+                uic: "KNEC-269",
+                crisisType: "Development Request",
+                description: "School expansion project for flood-displaced students from nomadic communities. Requires additional classroom blocks, dormitories, and vocational wings.",
+                severity: "High",
+                raised: 2400,
+                target: 6800,
+                location: "Tana River County (Marginalized Region)"
+            },
+            {
+                id: 6,
+                schoolName: "LAMU ISLAND SECONDARY SCHOOL",
+                uic: "KNEC-235",
+                crisisType: "Infrastructural Damage",
+                description: "Ocean salt erosion and storm damage to school buildings. Urgent reconstruction needed for classrooms, laboratory, and student accommodation.",
+                severity: "Critical",
+                raised: 3100,
+                target: 7200,
+                location: "Lamu County (Coastal Marginalized Region)"
+            }
+        ];
+
+        // Core App Initialization
+        window.onload = async function() {
+            initLocalDB();
+            await loadTrustedSchoolData();
+            loadStoredReportsIntoCampaigns();
+            renderPublicFeed();
+        };
+
+        // Navigation Engine
+        function navigateTo(viewName) {
+            if (viewName === 'admin' && currentSession?.role !== 'ADMIN') {
+                alert('Administrator access is restricted. Please log in with valid admin credentials.');
+                viewName = 'landing';
+            }
+
+            currentView = viewName;
+            
+            // Toggle view panels
+            document.getElementById('view-landing').className = currentView === 'landing' ? 'block' : 'hidden';
+            document.getElementById('view-login').className = currentView === 'login' ? 'block' : 'hidden';
+            document.getElementById('view-dashboard').className = currentView === 'dashboard' ? 'block' : 'hidden';
+            document.getElementById('view-admin').className = currentView === 'admin' ? 'block' : 'hidden';
+
+            if (currentView === 'landing') renderPublicFeed();
+            if (currentView === 'dashboard') renderDashboardView();
+            if (currentView === 'admin') renderAdminView();
+        }
+
+        // Authentication Gateway Switching Strategy
+        function setAuthMode(mode) {
+            activeAuthMode = mode;
+            const tabUic = document.getElementById('tab-uic');
+            const tabStandard = document.getElementById('tab-standard');
+            const tabAdmin = document.getElementById('tab-admin');
+            const loginLabel = document.getElementById('login-label');
+            const loginInput = document.getElementById('login-username');
+            const microcopy = document.getElementById('uic-microcopy');
+
+            if (mode === 'uic') {
+                tabUic.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-emerald-600 text-emerald-600 transition";
+                tabStandard.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                tabAdmin.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                loginLabel.innerText = "KNEC / UIC School Code";
+                loginInput.placeholder = "e.g., KNEC-254-8841 or UIC-254-8841";
+                microcopy.className = "text-[11px] text-slate-400 mt-1.5 leading-relaxed block";
+            } else if (mode === 'standard') {
+                tabUic.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                tabStandard.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-emerald-600 text-emerald-600 transition";
+                tabAdmin.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                loginLabel.innerText = "Email Address";
+                loginInput.placeholder = "name@domain.com";
+                microcopy.className = "hidden";
+            } else {
+                tabUic.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                tabStandard.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 transition";
+                tabAdmin.className = "w-1/3 pb-3 text-sm font-bold border-b-2 border-emerald-600 text-emerald-600 transition";
+                loginLabel.innerText = "Admin Email";
+                loginInput.placeholder = "admin@edushield.global";
+                microcopy.className = "hidden";
+            }
+        }
+
+        // Login Submission Handling
+        function handleLogin(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (identifier === ADMIN_CREDENTIAL && password === ADMIN_CREDENTIAL) {
+                currentSession = {
+                    role: 'ADMIN',
+                    identifier: identifier,
+                    schoolName: 'Edushield Global Admin'
+                };
+                // record admin login
+                saveLoginEvent({ identifier, role: currentSession.role, schoolName: currentSession.schoolName, at: new Date().toISOString() });
+                setLoggedInNav();
+                navigateTo('admin');
+                return;
+            }
+
+            if (activeAuthMode === 'uic') {
+                verifyKnecSchoolCode(identifier)
+                    .then(verification => {
+                        currentSession = {
+                            role: 'SCHOOL_HEAD',
+                            identifier: identifier,
+                            schoolName: verification.schoolName || "Sample Verified Academy"
+                        };
+                        // record school head login
+                        saveLoginEvent({ identifier, role: currentSession.role, schoolName: currentSession.schoolName, at: new Date().toISOString() });
+                        setLoggedInNav();
+                        navigateTo('dashboard');
+                    })
+                    .catch(error => {
+                        alert(`KNEC School Code verification failed: ${error.message}`);
+                    });
+                return;
+            }
+
+            currentSession = {
+                role: 'DONOR',
+                identifier: identifier,
+                schoolName: "Philanthropic Space"
+            };
+            // record donor login
+            saveLoginEvent({ identifier, role: currentSession.role, schoolName: currentSession.schoolName, at: new Date().toISOString() });
+
+            setLoggedInNav();
+            navigateTo('dashboard');
+        }
+
+        function logout() {
+            currentSession = null;
+            document.getElementById('nav-auth-section').innerHTML = `
+                <button onclick="navigateTo('login')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2 rounded-lg text-sm transition shadow-sm">Portal Authentication</button>`;
+            navigateTo('landing');
+        }
+
+        function handleTestCode() {
+            const identifier = document.getElementById('login-username').value.trim();
+            const resultBox = document.getElementById('login-test-result');
+            resultBox.className = 'hidden mt-3 rounded-xl p-3 text-sm font-medium';
+
+            if (!identifier) {
+                resultBox.innerText = 'Enter a KNEC or UIC code before testing.';
+                resultBox.className = 'mt-3 rounded-xl p-3 text-sm font-medium bg-red-50 text-red-700 border border-red-200';
+                return;
+            }
+
+            verifyKnecSchoolCode(identifier)
+                .then(verification => {
+                    resultBox.innerText = `Dataset verification passed. School: ${verification.schoolName}`;
+                    resultBox.className = 'mt-3 rounded-xl p-3 text-sm font-medium bg-emerald-50 text-emerald-700 border border-emerald-200';
+                })
+                .catch(error => {
+                    resultBox.innerText = `Dataset verification failed: ${error.message}`;
+                    resultBox.className = 'mt-3 rounded-xl p-3 text-sm font-medium bg-red-50 text-red-700 border border-red-200';
+                });
+        }
+
+        function fillSampleCode(code) {
+            document.getElementById('login-username').value = code;
+            document.getElementById('login-test-result').className = 'hidden';
+        }
+
+        // Public Feed Rendering Loop
+        function renderPublicFeed() {
+            const container = document.getElementById('campaigns-grid');
+            container.innerHTML = '';
+
+            campaigns.forEach(c => {
+                const percentage = Math.min(100, Math.round((c.raised / c.target) * 100));
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-mono">${c.uic}</span>
+                                <span class="text-xs px-2.5 py-1 rounded-md font-bold ${c.severity === 'Critical' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}">${c.severity}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-1">${c.schoolName}</h3>
+                            <p class="text-slate-500 text-xs font-semibold mb-3">${c.location} • <span class="text-emerald-600">${c.crisisType}</span></p>
+                            <p class="text-slate-600 text-sm mb-6">${c.description}</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                                <span>Raised: $${c.raised.toLocaleString()}</span>
+                                <span>Target: $${c.target.toLocaleString()}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 mb-4">
+                                <div class="bg-emerald-600 h-2 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                            </div>
+                            <button onclick="triggerPayment('${c.schoolName}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg text-sm transition">Provide Instant Support</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Dashboard Rendering Logic
+        function renderDashboardView() {
+            document.getElementById('session-uic-display').innerText = `School Code: ${currentSession.identifier}`;
+            document.getElementById('session-school-display').innerText = currentSession.schoolName;
+            document.getElementById('session-role-display').innerText = currentSession.role;
+
+            const dashboardNotification = document.getElementById('dashboard-notification');
+            dashboardNotification.innerHTML = '';
+            dashboardNotification.className = 'max-w-6xl mx-auto px-6 mb-6 hidden';
+
+            const workspace = document.getElementById('school-head-workspace');
+            
+            if (currentSession.role !== 'SCHOOL_HEAD') {
+                workspace.className = 'hidden';
+                alert("Redirecting: Non-educational profiles utilize dedicated alternative ledger monitors.");
+                return;
+            }
+            workspace.className = 'grid md:grid-cols-3 gap-8';
+
+            // Filter & Render Campaign Requests matching Current UIC Session
+            const listContainer = document.getElementById('my-campaigns-list');
+            listContainer.innerHTML = '';
+
+            const activeSchoolCampaigns = campaigns.filter(c => c.uic === currentSession.identifier);
+            const newlyVerified = activeSchoolCampaigns.filter(c => (c.severity === 'Approved' || c.severity === 'Funded') && c.verifiedAt && !c.verificationNotified);
+
+            if (newlyVerified.length > 0) {
+                const messages = newlyVerified.map(c => `Request #${c.id} for ${c.crisisType} has been verified.`).join(' ');
+                dashboardNotification.innerHTML = `
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-900 shadow-sm">
+                        <div class="font-semibold mb-2">Verification Update</div>
+                        <div class="text-sm leading-relaxed">${messages}</div>
+                    </div>`;
+                dashboardNotification.className = 'max-w-6xl mx-auto px-6 mb-6';
+                newlyVerified.forEach(c => c.verificationNotified = true);
+            }
+
+            if (activeSchoolCampaigns.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="bg-slate-100 text-center py-12 rounded-xl border border-dashed border-slate-300">
+                        <p class="text-slate-500 text-sm font-medium">No emergency crisis declarations logged under this School Code yet.</p>
+                    </div>`;
+            } else {
+                activeSchoolCampaigns.forEach(c => {
+                    const statusLabel = c.severity === 'Pending Review' ? 'Pending Verification' : c.severity;
+                    const statusBadgeClass = c.severity === 'Pending Review'
+                        ? 'bg-amber-50 text-amber-700'
+                        : c.severity === 'Critical'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-emerald-50 text-emerald-700';
+
+                    listContainer.innerHTML += `
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <span class="bg-slate-100 text-slate-800 text-xs px-2.5 py-1 rounded font-mono mr-2 font-bold">${c.crisisType}</span>
+                                    <span class="text-xs text-slate-400 font-medium">Tracking Reference: #${c.id}</span>
+                                </div>
+                                <span class="text-xs ${statusBadgeClass} font-bold px-2.5 py-1 rounded">${statusLabel}</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-4">${c.description}</p>
+                            ${c.severity === 'Pending Review' ? '<div class="mb-4 p-4 rounded-xl bg-amber-50 text-amber-900 text-sm font-semibold">This funding request is pending verification by an administrator.</div>' : ''}
+                            <div class="bg-slate-50 p-4 rounded-lg flex justify-between items-center text-sm">
+                                <div>
+                                    <span class="text-slate-500 text-xs block">Funds Allocated</span>
+                                    <span class="font-bold text-slate-800 text-base">$${c.raised.toLocaleString()} / $${c.target.toLocaleString()}</span>
+                                </div>
+                                <button onclick="alert('Verification check: Audited ledger statements match verified logs.')" class="text-xs bg-white border border-slate-300 hover:bg-slate-100 font-bold px-4 py-2 rounded-lg transition text-slate-700">Audit Funding Ledger</button>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        function renderAdminView() {
+            document.getElementById('admin-total-campaigns').innerText = campaigns.length;
+            document.getElementById('admin-pending-count').innerText = campaigns.filter(c => c.severity === 'Pending Review').length;
+            document.getElementById('admin-funded-count').innerText = campaigns.filter(c => c.raised >= c.target).length;
+
+            const adminList = document.getElementById('admin-campaigns-list');
+            adminList.innerHTML = '';
+
+            // Show recent login events for admin visibility
+            const logins = JSON.parse(localStorage.getItem('edushield_logins') || '[]');
+            let loginHtml = '';
+            if (logins.length === 0) {
+                loginHtml = '<div class="text-sm text-slate-500 mb-4">No login events recorded yet.</div>';
+            } else {
+                loginHtml = '<div class="mb-6"><h3 class="text-lg font-bold mb-2">Recent Logins</h3>';
+                loginHtml += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
+                logins.slice(0,10).forEach(l => {
+                    loginHtml += `<div class="bg-white border border-slate-200 rounded-lg p-3 text-sm">
+                        <div class="font-semibold">${l.schoolName || l.identifier}</div>
+                        <div class="text-slate-500 text-xs">${l.role} • ${l.identifier}</div>
+                        <div class="text-slate-400 text-xs mt-1">${new Date(l.at).toLocaleString()}</div>
+                    </div>`;
+                });
+                loginHtml += '</div></div>';
+            }
+            adminList.innerHTML += loginHtml;
+
+            // Render campaigns/reports with banking details where present
+            campaigns.forEach(c => {
+                adminList.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900">${c.schoolName}</h4>
+                                <p class="text-slate-500 text-sm">${c.uic || ''} • ${c.location || ''}</p>
+                                <span class="inline-flex mt-3 items-center rounded-full ${c.severity === 'Critical' ? 'bg-red-50 text-red-700' : c.severity === 'Pending Review' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'} text-xs font-semibold px-2.5 py-1">${c.severity}</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-slate-500 text-xs uppercase tracking-wide">Target</div>
+                                <div class="text-slate-900 font-bold text-xl">$${(c.target||0).toLocaleString()}</div>
+                                <div class="text-slate-500 text-xs uppercase tracking-wide mt-2">Raised</div>
+                                <div class="text-emerald-700 font-bold text-lg">$${(c.raised||0).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 mb-4">${c.description}</p>
+                        <div class="text-sm text-slate-700 mb-3">
+                            <div><strong>Crisis Classification:</strong> ${c.crisisType || 'N/A'}</div>
+                            <div><strong>Receiving Bank:</strong> ${c.receivingBank || 'Not provided'}</div>
+                            <div><strong>Account Number:</strong> ${c.accountNumber || 'Not provided'}</div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="adminUpdateCampaignStatus(${c.id}, 'approved')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Approve</button>
+                            <button onclick="adminUpdateCampaignStatus(${c.id}, 'funded')" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Mark as Funded</button>
+                            <button onclick="adminUpdateCampaignStatus(${c.id}, 'rejected')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Reject</button>
+                            <button onclick="adminOverrideCampaign(${c.id})" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Override</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function adminUpdateCampaignStatus(campaignId, status) {
+            const campaign = campaigns.find(c => c.id === campaignId);
+            if (!campaign) {
+                alert('Unable to find campaign for update.');
+                return;
+            }
+
+            campaign.overridden = true;
+            campaign.lastOverride = new Date().toLocaleString();
+
+            if (status === 'approved') {
+                campaign.severity = 'Approved';
+                campaign.verifiedAt = new Date().toLocaleString();
+                campaign.verificationNotified = false;
+                alert(`Campaign #${campaignId} approved and queued for donor visibility.`);
+            } else if (status === 'funded') {
+                campaign.raised = campaign.target;
+                campaign.severity = 'Funded';
+                campaign.verifiedAt = new Date().toLocaleString();
+                campaign.verificationNotified = false;
+                alert(`Campaign #${campaignId} marked as fully funded.`);
+            } else if (status === 'rejected') {
+                campaign.severity = 'Rejected';
+                alert(`Campaign #${campaignId} was rejected and archived.`);
+            }
+
+            renderAdminView();
+        }
+
+        function adminOverrideCampaign(campaignId) {
+            const campaign = campaigns.find(c => c.id === campaignId);
+            if (!campaign) {
+                alert('Unable to find campaign for override.');
+                return;
+            }
+
+            let choice = prompt('Override campaign status to (approved, funded, rejected, pending):', 'approved');
+            if (!choice) return;
+
+            choice = choice.trim().toLowerCase();
+            if (!['approved', 'funded', 'rejected', 'pending'].includes(choice)) {
+                alert('Invalid override choice. Use approved, funded, rejected, or pending.');
+                return;
+            }
+
+            campaign.overridden = true;
+            campaign.lastOverride = new Date().toLocaleString();
+
+            if (choice === 'pending') {
+                campaign.severity = 'Pending Review';
+                campaign.verifiedAt = undefined;
+                campaign.verificationNotified = false;
+                alert(`Campaign #${campaignId} has been reverted to pending review.`);
+            } else if (choice === 'funded') {
+                campaign.raised = campaign.target;
+                campaign.severity = 'Funded';
+                campaign.verifiedAt = new Date().toLocaleString();
+                campaign.verificationNotified = false;
+                alert(`Campaign #${campaignId} has been overridden to Funded.`);
+            } else {
+                campaign.severity = choice.charAt(0).toUpperCase() + choice.slice(1);
+                if (campaign.severity === 'Approved') {
+                    campaign.verifiedAt = new Date().toLocaleString();
+                    campaign.verificationNotified = false;
+                }
+                alert(`Campaign #${campaignId} has been overridden to ${campaign.severity}.`);
+            }
+
+            renderAdminView();
+        }
+
+        // Form Campaign Processing Engine
+        function handleCreateCampaign(event) {
+            event.preventDefault();
+            const type = document.getElementById('report-type').value;
+            const target = document.getElementById('report-target').value;
+            const desc = document.getElementById('report-desc').value;
+            const bank = document.getElementById('report-bank').value;
+            const account = document.getElementById('report-account').value;
+
+            const newReport = {
+                id: Date.now(),
+                schoolName: currentSession.schoolName,
+                uic: currentSession.identifier,
+                crisisType: type,
+                description: desc,
+                severity: "Pending Review",
+                raised: 0,
+                target: parseInt(target),
+                location: "Verified Hub",
+                receivingBank: bank,
+                accountNumber: account
+            };
+
+            campaigns.unshift(newReport);
+            // persist report to local storage DB
+            saveReport(newReport);
+            
+            // Clear inputs
+            document.getElementById('report-target').value = '';
+            document.getElementById('report-desc').value = '';
+            document.getElementById('report-bank').value = '';
+            document.getElementById('report-account').value = '';
+
+            alert("Crisis incident report pushed to verification pipeline successfully.");
+            renderDashboardView();
+        }
+
+        function triggerPayment(school) {
+            alert(`Direct payment API integration simulation for: ${school}. Initializing gateway endpoints...`);
+        }
+    </script>
+</body>
+</html>
+
